@@ -1,7 +1,7 @@
 #include "memory.hpp"
 #include <array>
 
-uint8_t Memory::operator[](uint16_t index){
+uint8_t& Memory::operator[](uint16_t index){
     return this->memory[index];
 }
 

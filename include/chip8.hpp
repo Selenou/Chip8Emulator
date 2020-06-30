@@ -18,7 +18,7 @@ class Chip8 {
     private:
         std::unique_ptr<Cpu> cpu;
         std::shared_ptr<Renderer> renderer;
-        std::unique_ptr<Input> input;
+        std::shared_ptr<Input> input;
         std::shared_ptr<Memory> memory;
         bool running;
 

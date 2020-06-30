@@ -8,11 +8,11 @@
 void Chip8::init(const char *romPath){
     this->memory = std::make_shared<Memory>();
     this->renderer = std::make_shared<Renderer>();
-	this->input = std::make_unique<Input>();
+	this->input = std::make_shared<Input>();
 
-	this->cpu = std::make_unique<Cpu>(this->memory, this->renderer);
+	this->cpu = std::make_unique<Cpu>(this->memory, this->renderer, this->input);
 
-    this->loadRom(/*romPath*/"roms/Cave.ch8");
+    this->loadRom(romPath);
 	this->loadFont();
 }
 
@@ -28,7 +28,7 @@ void Chip8::run(){
 
 		//slow down this
 		this->cpu->performCycle();
-		//rendering update
+		this->renderer->render();
 	}
 }
 

@@ -7,7 +7,7 @@
 class Input{
     public:
         bool update();
-        bool isPressed(const char keyCode);
+        bool isPressed(const uint8_t keyCode);
 
     private :
         std::map<SDL_Keycode, bool> keys {
@@ -17,9 +17,9 @@ class Input{
             {SDLK_4, false}, {SDLK_r, false}, {SDLK_f, false}, {SDLK_v, false}
         };
 
-        void pressedUp(const char keyCode);
-        void pressedDown(const char keyCode);
-        bool isKeyInMap(const char keyCode);
+        void pressedUp(const uint8_t keyCode);
+        void pressedDown(const uint8_t keyCode);
+        bool isKeyInMap(const uint8_t keyCode);
 
         /*
             Keypad       Keyboard

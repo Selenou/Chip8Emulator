@@ -3,12 +3,14 @@
 
 #include "stdint.h"
 #include <memory>
+#include <random>
 #include "memory.hpp"
 #include "renderer.hpp"
+#include "input.hpp"
 
 class Cpu {
     public:
-        Cpu(std::shared_ptr<Memory> memory, std::shared_ptr<Renderer> renderer);
+        Cpu(std::shared_ptr<Memory> memory, std::shared_ptr<Renderer> renderer, std::shared_ptr<Input> input);
         void performCycle();
 
     private:
@@ -20,8 +22,12 @@ class Cpu {
         uint16_t    opcode;
         uint8_t     delayTimer;
 
+        std::default_random_engine randGen;
+	    std::uniform_int_distribution<int> randByte;
+
         std::shared_ptr<Memory> memory;
         std::shared_ptr<Renderer> renderer;
+        std::shared_ptr<Input> input;
 
         void fetchNextInstruction();
         void execute();

@@ -8,7 +8,7 @@ const size_t ROM_MEMORY_LOCATION = 0x200;
 
 class Memory {
     public:
-        uint8_t operator[](uint16_t index);
+        uint8_t& operator[](uint16_t index);
         void loadRom(std::vector<char>&& buffer);
         void loadFont(std::array<uint8_t, FONT_SET_SIZE>&& fontset);
     private:
