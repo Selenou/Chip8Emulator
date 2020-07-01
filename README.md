@@ -2,6 +2,8 @@
 
 CHIP-8 is an interpreted programming language, developed by Joseph Weisbecker. It was initially used on the COSMAC VIP and Telmac 1800 8-bit microcomputers in the mid-1970s. CHIP-8 programs are run on a CHIP-8 virtual machine. It was made to allow video games to be more easily programmed for these computers.
 
+## Screenshots
+
 ![Test](doc/test.JPG "Test")
 
 ![Cave](doc/cave.JPG "Cave")
@@ -10,6 +12,9 @@ CHIP-8 is an interpreted programming language, developed by Joseph Weisbecker. I
 
 ## Tech
 
+I'm still learning C++ so it's not perfect.
+
+- C++ 14
 - SDL2
 - CMake
 - vcpkg
