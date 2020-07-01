@@ -12,13 +12,13 @@ Renderer::Renderer(){
         SDL_WINDOWPOS_UNDEFINED,
 		VIDEO_WIDTH * 10, 
         VIDEO_HEIGHT * 10,
-        SDL_WINDOW_OPENGL
+        SDL_WINDOW_SHOWN
 	);
 
     this->renderer = SDL_CreateRenderer(
         this->window,
         -1,
-        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
+        SDL_RENDERER_ACCELERATED
     );
 
     this->texture = SDL_CreateTexture(
@@ -29,13 +29,14 @@ Renderer::Renderer(){
         VIDEO_HEIGHT
     );
 
-    videoPitch = sizeof(this->videoBuffer[0]) * VIDEO_WIDTH;
+    this->videoPitch = sizeof(this->videoBuffer[0]) * VIDEO_WIDTH;
+    this->videoBuffer.fill(0);
 }
 
 void Renderer::render(){
     SDL_UpdateTexture(this->texture, nullptr, &(this->videoBuffer), this->videoPitch);
     SDL_RenderClear(this->renderer);
-    SDL_RenderCopy(this->renderer, texture, nullptr, nullptr);
+    SDL_RenderCopy(this->renderer, this->texture, nullptr, nullptr);
     SDL_RenderPresent(this->renderer);
 }
 

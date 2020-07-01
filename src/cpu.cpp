@@ -9,6 +9,14 @@ Cpu::Cpu(std::shared_ptr<Memory> memory, std::shared_ptr<Renderer> renderer, std
     this->input = input;
 
     this->programCounter = ROM_MEMORY_LOCATION; // pc = 0x200
+    this->stackPointer = 0;
+    this->indexRegister = 0;
+    this->delayTimer = 0;
+    this->opcode = 0;
+
+    // init arrays
+    std::fill_n(this->registers, this->registers[15], 0);
+    std::fill_n(this->stack, this->stack[15], 0);
 
     // init instruction table
     std::fill_n(this->chip8InstructionTable, 0xF +1, &Cpu::OP_NULL);
@@ -106,6 +114,7 @@ void Cpu::Table_Fxxx(){
 
 void Cpu::OP_NULL(){
     // Do nothing
+	printf("OP_NULL");
 }
 
 void Cpu::OP_00E0(){
@@ -151,7 +160,7 @@ void Cpu::OP_5xy0(){
     uint8_t Vx = (this->opcode & 0x0F00u) >> 8u;
 	uint8_t Vy = (this->opcode & 0x00F0u) >> 4u;
 
-    if(this->registers[Vx] == Vy){
+    if(this->registers[Vx] == this->registers[Vy]){
         this->programCounter += 2;
     }
 }
@@ -268,8 +277,8 @@ void Cpu::OP_Dxyn(){
 	uint8_t Vy = (this->opcode & 0x00F0u) >> 4u;
 	uint8_t height = this->opcode & 0x000Fu;
 
-    uint8_t xPos = this->registers[Vx] % VIDEO_WIDTH;
-	uint8_t yPos = this->registers[Vy] % VIDEO_HEIGHT;
+    uint8_t xPos = this->registers[Vx];
+	uint8_t yPos = this->registers[Vy];
 
     this->registers[0xF] = 0;
 
@@ -280,7 +289,9 @@ void Cpu::OP_Dxyn(){
         for (unsigned int col = 0; col < 8; col++){
 
             uint8_t spritePixel = spriteByte & (0x80u >> col);
-            uint32_t* screenPixel = &this->renderer->getBuffer()[(yPos + row) * VIDEO_WIDTH + (xPos + col)];
+
+            // If the sprite is positioned so part of it is outside the coordinates of the display, it wraps around to the opposite side of the screen
+            uint32_t* screenPixel = &this->renderer->getBuffer()[((yPos + row) % VIDEO_HEIGHT) * VIDEO_WIDTH + ((xPos + col) % VIDEO_WIDTH)];
 
             if (spritePixel){
 				if (*screenPixel == 0xFFFFFFFF)
@@ -296,9 +307,8 @@ void Cpu::OP_Dxyn(){
 
 void Cpu::OP_Ex9E(){
     uint8_t Vx = (this->opcode & 0x0F00u) >> 8u;
-
 	uint8_t key = this->registers[Vx];
-
+	
 	if (this->input->isPressed(key))
 	{
 		this->programCounter += 2;
@@ -307,9 +317,8 @@ void Cpu::OP_Ex9E(){
 
 void Cpu::OP_ExA1(){
     uint8_t Vx = (this->opcode & 0x0F00u) >> 8u;
-
 	uint8_t key = this->registers[Vx];
-
+	
 	if (!this->input->isPressed(key))
 	{
 		this->programCounter += 2;
@@ -322,7 +331,27 @@ void Cpu::OP_Fx07(){
 }
 
 void Cpu::OP_Fx0A(){
-    printf("hello");
+    uint8_t Vx = (this->opcode & 0x0F00u) >> 8u;
+
+    this->input.reset();
+	
+    if (this->input->isPressed(SDLK_x))	registers[Vx] = 0;
+	else if (this->input->isPressed(SDLK_1)) registers[Vx] = 1;
+	else if (this->input->isPressed(SDLK_2)) registers[Vx] = 2;
+	else if (this->input->isPressed(SDLK_3)) registers[Vx] = 3;
+	else if (this->input->isPressed(SDLK_q)) registers[Vx] = 4;
+	else if (this->input->isPressed(SDLK_w)) registers[Vx] = 5;
+	else if (this->input->isPressed(SDLK_e)) registers[Vx] = 6;
+	else if (this->input->isPressed(SDLK_a)) registers[Vx] = 7;
+	else if (this->input->isPressed(SDLK_s)) registers[Vx] = 8;
+	else if (this->input->isPressed(SDLK_d)) registers[Vx] = 9;
+	else if (this->input->isPressed(SDLK_z)) registers[Vx] = 10;
+	else if (this->input->isPressed(SDLK_c)) registers[Vx] = 11;
+	else if (this->input->isPressed(SDLK_4)) registers[Vx] = 12;
+	else if (this->input->isPressed(SDLK_r)) registers[Vx] = 13;
+	else if (this->input->isPressed(SDLK_f)) registers[Vx] = 14;
+	else if (this->input->isPressed(SDLK_v)) registers[Vx] = 15;
+	else this->programCounter -= 2;
 }
 
 void Cpu::OP_Fx15(){
@@ -331,7 +360,7 @@ void Cpu::OP_Fx15(){
 }
 
 void Cpu::OP_Fx18(){
-    //TODO : sound timer
+    // sound timer
 }
 
 void Cpu::OP_Fx1E(){
@@ -374,7 +403,7 @@ void Cpu::OP_Fx55(){
 void Cpu::OP_Fx65(){
     uint8_t Vx = (this->opcode & 0x0F00u) >> 8u;
 
-	for (uint8_t i = 0; i <= Vx; ++i)
+	for (uint8_t i = 0; i <= Vx; i++)
 	{
 		this->registers[i] = (*this->memory)[this->indexRegister + i];
 	}

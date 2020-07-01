@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <array>
+#include <chrono>
 
 void Chip8::init(const char *romPath){
     this->memory = std::make_shared<Memory>();
@@ -17,18 +18,25 @@ void Chip8::init(const char *romPath){
 }
 
 void Chip8::run(){
+	float cycleDelay = 3 ; // ms
 	this->running = true;
+	auto lastCycleTime = std::chrono::high_resolution_clock::now();
 
 	while(this->running){
 		bool shouldStop = this->input->update();
+
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		float dt = std::chrono::duration<float, std::chrono::milliseconds::period>(currentTime - lastCycleTime).count();
 
 		if(shouldStop){
 			this->stop();
 		}
 
-		//slow down this
-		this->cpu->performCycle();
-		this->renderer->render();
+		if (dt > cycleDelay){
+			lastCycleTime = currentTime;
+			this->cpu->performCycle();
+			this->renderer->render();
+		}
 	}
 }
 

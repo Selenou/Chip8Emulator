@@ -80,7 +80,7 @@ class Cpu {
         instructionTable chip8InstructionTable0[0xF +1];            // Special table
         instructionTable chip8InstructionTable8[0xF +1];            // Arithmetic table
         instructionTable chip8InstructionTableE[0xF +1];            // Skip table
-        instructionTable chip8InstructionTableF[0x65 + 1];      // Timers and Keyboard table
+        instructionTable chip8InstructionTableF[0x65 + 1];          // Timers and Keyboard table
 };
 
 #endif

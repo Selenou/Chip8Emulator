@@ -2,24 +2,19 @@
 #define INPUT_HPP
 
 #include <SDL2/SDL.h>
-#include <map>
+#include <array>
 
 class Input{
     public:
         bool update();
-        bool isPressed(const uint8_t keyCode);
+        uint8_t isPressed(const uint8_t keyCode);
+        void reset();
 
     private :
-        std::map<SDL_Keycode, bool> keys {
-            {SDLK_x, false}, {SDLK_1, false}, {SDLK_2, false}, {SDLK_3, false}, 
-            {SDLK_q, false}, {SDLK_w, false}, {SDLK_e, false}, {SDLK_a, false}, 
-            {SDLK_s, false}, {SDLK_d, false}, {SDLK_z, false}, {SDLK_c, false}, 
-            {SDLK_4, false}, {SDLK_r, false}, {SDLK_f, false}, {SDLK_v, false}
-        };
+        std::array<uint8_t, 16> keys;
 
         void pressedUp(const uint8_t keyCode);
         void pressedDown(const uint8_t keyCode);
-        bool isKeyInMap(const uint8_t keyCode);
 
         /*
             Keypad       Keyboard

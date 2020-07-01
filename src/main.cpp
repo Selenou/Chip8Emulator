@@ -10,7 +10,7 @@ int main(int argc, char* argv[]){
 
 	try{
 		Chip8 chip8;
-		chip8.init("roms/test_opcode.ch8"/*argv[1]*/);
+		chip8.init("roms/Breakout.ch8"/*argv[1]*/);
 		chip8.run();
 	} catch(std::runtime_error error){
 		std::cout << "Exception : " << error.what() << std::endl;
