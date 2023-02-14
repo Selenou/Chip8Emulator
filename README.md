@@ -12,8 +12,6 @@ CHIP-8 is an interpreted programming language, developed by Joseph Weisbecker. I
 
 ## Tech
 
-I'm still learning C++ so it's not perfect.
-
 - C++ 14
 - SDL2
 - CMake
